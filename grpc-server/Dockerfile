@@ -1,0 +1,29 @@
+FROM maven:3.9-eclipse-temurin-17 AS build
+
+WORKDIR /app
+
+# Copy parent proto files first
+COPY ../shared/proto /app/shared/proto
+
+# Copy pom.xml and download dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copy source code
+COPY src ./src
+
+# Build the application
+RUN mvn clean package -DskipTests
+
+FROM eclipse-temurin:17-jre
+
+WORKDIR /app
+
+# Copy the jar from build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose port
+EXPOSE 9090
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]

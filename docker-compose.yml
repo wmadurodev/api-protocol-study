@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # gRPC Server
+  grpc-server:
+    build:
+      context: ./grpc-server
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - api-network
+
+  # REST Server
+  rest-server:
+    build:
+      context: ./rest-server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - api-network
+
+  # GraphQL Server
+  graphql-server:
+    build:
+      context: ./graphql-server
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - api-network
+
+  # React Client
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - grpc-server
+      - rest-server
+      - graphql-server
+    networks:
+      - api-network
+
+networks:
+  api-network:
+    driver: bridge
