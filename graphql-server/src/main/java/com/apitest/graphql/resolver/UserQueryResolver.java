@@ -35,19 +35,21 @@ public class UserQueryResolver {
     }
 
     @QueryMapping
-    public Map<String, Object> listUsers(@Argument(defaultValue = "0") int page,
-                                         @Argument(defaultValue = "20") int size) {
+    public Map<String, Object> listUsers(@Argument Integer page,
+                                         @Argument Integer size) {
         long startTime = System.nanoTime();
         try {
-            List<UserEntity> users = dataService.listUsers(page, size);
+            int actualPage = page != null ? page : 0;
+            int actualSize = size != null ? size : 20;
+            List<UserEntity> users = dataService.listUsers(actualPage, actualSize);
             long totalElements = dataService.getTotalUsers();
-            int totalPages = (int) Math.ceil((double) totalElements / size);
+            int totalPages = (int) Math.ceil((double) totalElements / actualSize);
 
             Map<String, Object> result = new HashMap<>();
             result.put("users", users);
             result.put("totalElements", totalElements);
             result.put("totalPages", totalPages);
-            result.put("currentPage", page);
+            result.put("currentPage", actualPage);
 
             long duration = System.nanoTime() - startTime;
             log.debug("listUsers query completed in {} ms", duration / 1_000_000.0);
@@ -75,10 +77,11 @@ public class UserQueryResolver {
 
     @QueryMapping
     public List<UserEntity> searchUsers(@Argument String query,
-                                        @Argument(defaultValue = "10") int limit) {
+                                        @Argument Integer limit) {
         long startTime = System.nanoTime();
         try {
-            List<UserEntity> users = dataService.searchUsers(query, limit);
+            int actualLimit = limit != null ? limit : 10;
+            List<UserEntity> users = dataService.searchUsers(query, actualLimit);
             long duration = System.nanoTime() - startTime;
             log.debug("searchUsers query completed in {} ms", duration / 1_000_000.0);
             return users;
