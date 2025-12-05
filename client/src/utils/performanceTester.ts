@@ -1,8 +1,9 @@
 import { PerformanceMetrics, TestResults } from '../types';
 import { restApi } from '../api/restClient';
 import { graphqlApi } from '../api/graphqlClient';
+import { grpcApi } from '../api/grpcClient';
 
-export type APIType = 'REST' | 'GraphQL';
+export type APIType = 'REST' | 'GraphQL' | 'gRPC';
 
 export interface TestConfig {
   apiType: APIType;
@@ -38,6 +39,8 @@ export class PerformanceTester {
         response = await this.executeRestOperation(operation);
       } else if (apiType === 'GraphQL') {
         response = await this.executeGraphQLOperation(operation);
+      } else if (apiType === 'gRPC') {
+        response = await this.executeGrpcOperation(operation);
       }
 
       payloadSize = this.calculatePayloadSize(response);
@@ -99,6 +102,28 @@ export class PerformanceTester {
         return await graphqlApi.getUserOrders(1);
       case 'searchUsers':
         return await graphqlApi.searchUsers('john', 10);
+      default:
+        throw new Error(`Unknown operation: ${operation}`);
+    }
+  }
+
+  private async executeGrpcOperation(operation: string): Promise<any> {
+    switch (operation) {
+      case 'getUser':
+        return await grpcApi.getUser(1);
+      case 'listUsers':
+        return await grpcApi.listUsers(0, 20);
+      case 'createUser':
+        return await grpcApi.createUser({
+          username: `testuser${Date.now()}`,
+          email: `test${Date.now()}@example.com`,
+          firstName: 'Test',
+          lastName: 'User',
+        });
+      case 'getUserOrders':
+        return await grpcApi.getUserOrders(1);
+      case 'searchUsers':
+        return await grpcApi.searchUsers('john', 10);
       default:
         throw new Error(`Unknown operation: ${operation}`);
     }

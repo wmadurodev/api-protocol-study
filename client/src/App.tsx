@@ -42,7 +42,7 @@ const App: React.FC = () => {
   const runAllTests = async () => {
     setIsRunning(true);
     try {
-      const apis: APIType[] = ['REST', 'GraphQL'];
+      const apis: APIType[] = ['REST', 'GraphQL', 'gRPC'];
 
       for (const api of apis) {
         for (const operation of operations) {
@@ -89,6 +89,7 @@ const App: React.FC = () => {
             >
               <option value="REST">REST</option>
               <option value="GraphQL">GraphQL</option>
+              <option value="gRPC">gRPC</option>
             </select>
           </div>
 
