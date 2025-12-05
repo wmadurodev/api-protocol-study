@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package api.performance;
+
+option java_multiple_files = true;
+option java_package = "com.apitest.grpc";
+option java_outer_classname = "UserServiceProto";
+
+import "google/protobuf/timestamp.proto";
+
+// User message
+message User {
+  int64 id = 1;
+  string username = 2;
+  string email = 3;
+  string first_name = 4;
+  string last_name = 5;
+  google.protobuf.Timestamp created_at = 6;
+  bool is_active = 7;
+}
+
+// OrderItem message
+message OrderItem {
+  int64 id = 1;
+  string product_name = 2;
+  int32 quantity = 3;
+  string unit_price = 4; // Using string for Decimal precision
+}
+
+// Order message
+message Order {
+  int64 id = 1;
+  int64 user_id = 2;
+  google.protobuf.Timestamp order_date = 3;
+  string total_amount = 4; // Using string for Decimal precision
+  string status = 5; // PENDING, COMPLETED, CANCELLED
+  repeated OrderItem items = 6;
+}
+
+// Get User by ID
+message GetUserRequest {
+  int64 user_id = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+// List Users (Paginated)
+message ListUsersRequest {
+  int32 page = 1;
+  int32 size = 2;
+}
+
+message ListUsersResponse {
+  repeated User users = 1;
+  int64 total_elements = 2;
+  int32 total_pages = 3;
+  int32 current_page = 4;
+}
+
+// Create User
+message CreateUserRequest {
+  string username = 1;
+  string email = 2;
+  string first_name = 3;
+  string last_name = 4;
+}
+
+message CreateUserResponse {
+  User user = 1;
+}
+
+// Get User Orders
+message GetUserOrdersRequest {
+  int64 user_id = 1;
+}
+
+message GetUserOrdersResponse {
+  repeated Order orders = 1;
+}
+
+// Search Users
+message SearchUsersRequest {
+  string query = 1;
+  int32 limit = 2;
+}
+
+message SearchUsersResponse {
+  repeated User users = 1;
+}
+
+// Bulk Create Users
+message BulkCreateUsersRequest {
+  repeated CreateUserRequest users = 1;
+}
+
+message BulkCreateUsersResponse {
+  repeated User users = 1;
+}
+
+// UserService definition
+service UserService {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+  rpc GetUserOrders(GetUserOrdersRequest) returns (GetUserOrdersResponse);
+  rpc SearchUsers(SearchUsersRequest) returns (SearchUsersResponse);
+  rpc BulkCreateUsers(BulkCreateUsersRequest) returns (BulkCreateUsersResponse);
+}
