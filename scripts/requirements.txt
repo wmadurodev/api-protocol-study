@@ -1,0 +1,15 @@
+# Requirements for parallel_perf_test.py
+# Parallel Performance Testing Script for REST vs gRPC
+
+# gRPC support
+grpcio==1.60.0
+grpcio-tools==1.60.0
+
+# HTTP requests for REST API
+requests==2.31.0
+
+# Note: The script also requires the generated gRPC Python code
+# from the python-grpc-client/ directory. Ensure you have run:
+#   cd ../python-grpc-client
+#   ./generate_grpc.sh
+# or manually generated the protobuf files with protoc
