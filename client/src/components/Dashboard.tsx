@@ -1,6 +1,16 @@
 import React, { useState, useMemo } from 'react';
 import { PerformanceMetrics, TestResults } from '../types';
 import Spinner from './Spinner';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from 'recharts';
 
 interface DashboardProps {
   metrics: PerformanceMetrics[];
@@ -19,6 +29,7 @@ interface MethodComparison {
 const Dashboard: React.FC<DashboardProps> = ({ metrics, results, isRunning }) => {
   const [summaryExpanded, setSummaryExpanded] = useState(false);
   const [recentMetricsExpanded, setRecentMetricsExpanded] = useState(false);
+  const [comparisonExpanded, setComparisonExpanded] = useState(false);
 
   const comparisonData = useMemo(() => {
     const methodMap = new Map<string, { REST?: number; gRPC?: number; GraphQL?: number }>();
@@ -83,27 +94,49 @@ const Dashboard: React.FC<DashboardProps> = ({ metrics, results, isRunning }) =>
         <h2>Test Results</h2>
 
         <div className="api-comparison">
-        <h3>API Performance Comparison by Method</h3>
-        <table className="results-table comparison-table">
-          <thead>
-            <tr>
-              <th>Method</th>
-              <th>REST (ms)</th>
-              <th>gRPC (ms)</th>
-              <th>GraphQL (ms)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {comparisonData.map((row) => (
-              <tr key={row.method}>
-                <td>{row.method}</td>
-                <td>{row.REST !== undefined ? row.REST.toFixed(2) : '-'}</td>
-                <td>{row.gRPC !== undefined ? row.gRPC.toFixed(2) : '-'}</td>
-                <td>{row.GraphQL !== undefined ? row.GraphQL.toFixed(2) : '-'}</td>
+        <div style={{ marginBottom: '20px' }}>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={comparisonData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="method" />
+              <YAxis label={{ value: 'Response Time (ms)', angle: -90, position: 'insideLeft' }} />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="REST" stroke="#8884d8" strokeWidth={2} />
+              <Line type="monotone" dataKey="gRPC" stroke="#82ca9d" strokeWidth={2} />
+              <Line type="monotone" dataKey="GraphQL" stroke="#ffc658" strokeWidth={2} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <h3
+          onClick={() => setComparisonExpanded(!comparisonExpanded)}
+          style={{ cursor: 'pointer', userSelect: 'none' }}
+        >
+          API Performance Comparison by Method {comparisonExpanded ? '▼' : '▶'}
+        </h3>
+        {comparisonExpanded && (
+          <table className="results-table comparison-table">
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>REST (ms)</th>
+                <th>gRPC (ms)</th>
+                <th>GraphQL (ms)</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {comparisonData.map((row) => (
+                <tr key={row.method}>
+                  <td>{row.method}</td>
+                  <td>{row.REST !== undefined ? row.REST.toFixed(2) : '-'}</td>
+                  <td>{row.gRPC !== undefined ? row.gRPC.toFixed(2) : '-'}</td>
+                  <td>{row.GraphQL !== undefined ? row.GraphQL.toFixed(2) : '-'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       <div className="results-summary">
