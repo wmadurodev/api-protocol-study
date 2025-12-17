@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import jakarta.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -60,7 +60,7 @@ public class DataService {
                     .email(username + "@example.com")
                     .firstName(firstName)
                     .lastName(lastName)
-                    .createdAt(Instant.now().minusSeconds(random.nextInt(31536000)))
+                    .createdAt(OffsetDateTime.now().minusSeconds(random.nextInt(31536000)))
                     .isActive(random.nextBoolean())
                     .build();
 
@@ -101,7 +101,7 @@ public class DataService {
             OrderEntity order = OrderEntity.builder()
                     .id(orderId)
                     .userId(userId)
-                    .orderDate(Instant.now().minusSeconds(random.nextInt(31536000)))
+                    .orderDate(OffsetDateTime.now().minusSeconds(random.nextInt(31536000)))
                     .totalAmount(total.setScale(2, RoundingMode.HALF_UP))
                     .status(statuses[random.nextInt(statuses.length)])
                     .items(items)
@@ -135,7 +135,7 @@ public class DataService {
                 .email(email)
                 .firstName(firstName)
                 .lastName(lastName)
-                .createdAt(Instant.now())
+                .createdAt(OffsetDateTime.now())
                 .isActive(true)
                 .build();
 

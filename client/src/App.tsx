@@ -49,7 +49,7 @@ const App: React.FC = () => {
           await tester.runTest({
             apiType: api,
             operation,
-            iterations: 10,
+            iterations,
           });
         }
       }

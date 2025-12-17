@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class UserEntity {
     private String email;
     private String firstName;
     private String lastName;
-    private Instant createdAt;
+    private OffsetDateTime createdAt;
     private Boolean isActive;
 
     @Builder.Default

@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
 public class OrderEntity {
     private Long id;
     private Long userId;
-    private Instant orderDate;
+    private OffsetDateTime orderDate;
     private BigDecimal totalAmount;
     private OrderStatus status;
 
