@@ -201,6 +201,8 @@ curl -X POST http://localhost:8081/graphql \
 
 ## Using the Performance Dashboard
 
+![Performance Dashboard](docs/images/client-screenshot.png)
+
 1. Open http://localhost:3000 in your browser
 2. Select an API type (REST or GraphQL)
 3. Choose an operation to test
