@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { PerformanceMetrics, TestResults } from '../types';
+import Spinner from './Spinner';
 
 interface DashboardProps {
   metrics: PerformanceMetrics[];
   results: TestResults;
+  isRunning: boolean;
 }
 
 interface MethodComparison {
@@ -14,7 +16,7 @@ interface MethodComparison {
   avgTime: number;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ metrics, results }) => {
+const Dashboard: React.FC<DashboardProps> = ({ metrics, results, isRunning }) => {
   const [summaryExpanded, setSummaryExpanded] = useState(false);
   const [recentMetricsExpanded, setRecentMetricsExpanded] = useState(false);
 
@@ -50,7 +52,7 @@ const Dashboard: React.FC<DashboardProps> = ({ metrics, results }) => {
     return comparisons.sort((a, b) => b.avgTime - a.avgTime);
   }, [results]);
 
-  if (metrics.length === 0) {
+  if (metrics.length === 0 && !isRunning) {
     return (
       <div className="dashboard">
         <h2>Test Results</h2>
@@ -61,11 +63,26 @@ const Dashboard: React.FC<DashboardProps> = ({ metrics, results }) => {
     );
   }
 
-  return (
-    <div className="dashboard">
-      <h2>Test Results</h2>
+  if (metrics.length === 0 && isRunning) {
+    return (
+      <div className="dashboard">
+        <h2>Test Results</h2>
+        <Spinner size="large" message="Running tests..." />
+      </div>
+    );
+  }
 
-      <div className="api-comparison">
+  return (
+    <div className={`dashboard ${isRunning ? 'dashboard-loading' : ''}`}>
+      {isRunning && (
+        <div className="loading-overlay">
+          <Spinner size="large" message="Running tests..." />
+        </div>
+      )}
+      <div className="dashboard-content">
+        <h2>Test Results</h2>
+
+        <div className="api-comparison">
         <h3>API Performance Comparison by Method</h3>
         <table className="results-table comparison-table">
           <thead>
@@ -161,6 +178,7 @@ const Dashboard: React.FC<DashboardProps> = ({ metrics, results }) => {
             ))}
           </div>
         )}
+      </div>
       </div>
     </div>
   );

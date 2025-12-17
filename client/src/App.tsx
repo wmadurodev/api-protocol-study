@@ -133,7 +133,7 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <Dashboard metrics={metrics} results={results} />
+        <Dashboard metrics={metrics} results={results} isRunning={isRunning} />
       </div>
     </div>
   );
