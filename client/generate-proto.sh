@@ -2,7 +2,16 @@
 
 # Script to generate TypeScript client code from proto files
 
-PROTO_DIR="../shared/proto"
+# Support both local development and Docker environments
+if [ -d "./shared/proto" ]; then
+  PROTO_DIR="./shared/proto"
+elif [ -d "../shared/proto" ]; then
+  PROTO_DIR="../shared/proto"
+else
+  echo "Error: Proto directory not found"
+  exit 1
+fi
+
 OUT_DIR="./src/generated"
 
 # Create output directory if it doesn't exist
