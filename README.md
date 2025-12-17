@@ -10,6 +10,8 @@ This project implements the same functionality across three different API techno
 - **REST Server** (Port 8080) - JSON over HTTP/1.1
 - **GraphQL Server** (Port 8081) - GraphQL with single endpoint
 - **React Client** (Port 3000) - Performance testing dashboard
+- **Python gRPC Client** - Standalone Python client for gRPC testing and automation
+- **Performance Scripts** - Parallel performance testing tools for REST vs gRPC comparison
 
 ## Project Structure
 
@@ -36,6 +38,14 @@ api-performance-test/
 │   ├── src/main/java/
 │   ├── pom.xml
 │   └── Dockerfile
+├── python-grpc-client/       # Python gRPC client for testing
+│   ├── client.py             # Client implementation
+│   ├── generate_grpc.sh      # gRPC code generation script
+│   ├── requirements.txt
+│   └── README.md
+├── scripts/                  # Performance testing scripts
+│   ├── parallel_perf_test.py # Parallel REST vs gRPC testing
+│   └── README.md
 ├── shared/                   # Shared data models
 │   └── proto/                # Protocol Buffer definitions
 ├── docker-compose.yml        # Docker orchestration
@@ -199,6 +209,29 @@ curl -X POST http://localhost:8081/graphql \
 6. View real-time metrics and statistics
 7. Use "Run All Tests" to compare all APIs across all operations
 8. Export results for further analysis
+
+## Additional Testing Tools
+
+### Python gRPC Client
+
+A standalone Python client for testing the gRPC server with all 6 RPC methods. This provides a programmatic way to interact with the gRPC service outside of the web dashboard, useful for automation, scripting, and command-line testing.
+
+See [python-grpc-client/README.md](python-grpc-client/README.md) for detailed usage instructions, including:
+- Setup and dependency installation
+- Generating gRPC Python code from proto files
+- Using the client programmatically or running automated tests
+- All 6 RPC method examples (CreateUser, BulkCreateUsers, ListUsers, GetUser, SearchUsers, GetUserOrders)
+
+### Performance Testing Scripts
+
+High-performance parallel testing scripts for comparing REST and gRPC server performance. These scripts execute concurrent requests and provide detailed metrics, percentiles, and comparative analysis between protocols.
+
+See [scripts/README.md](scripts/README.md) for comprehensive documentation, including:
+- Running parallel performance tests with configurable request counts
+- Exporting results in JSON or CSV formats
+- Metrics collected (latency, throughput, payload size, percentiles)
+- Integration with CI/CD pipelines
+- Advanced configuration options
 
 ## Performance Testing Protocol
 
